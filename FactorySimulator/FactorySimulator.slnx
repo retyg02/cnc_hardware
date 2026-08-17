@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="FactorySimulator/FactorySimulator.vcxproj" />
+  <Project Path="FactorySimulator/FactorySimulator.vcxproj" Id="5f242f68-8d79-4b6b-871b-f47beb1eefd6" />
 </Solution>
