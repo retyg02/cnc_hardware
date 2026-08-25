@@ -21,10 +21,21 @@
     <ClCompile Include="device.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="modbus_crc.c">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="device.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="modbus_crc.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="crc16_x64.asm">
+      <Filter>Исходные файлы</Filter>
+    </MASM>
   </ItemGroup>
 </Project>

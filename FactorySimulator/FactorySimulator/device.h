@@ -3,27 +3,31 @@
 #include <vector>
 #include <memory>
 
-
 namespace FactorySettings
 {
     constexpr double ROOM_TEMPERATURE = 25.0;
     constexpr double CRITICAL_TEMPERATURE = 100.0;
     constexpr double CONVEYOR_MAX_LENGTH = 5.0;
     constexpr double CONVEYOR_DEFAULT_SPEED = 0.8;
+
+    constexpr int MB_CNC_STATUS = 0;       
+    constexpr int MB_CNC_X = 1;            
+    constexpr int MB_CNC_Y = 2;            
+    constexpr int MB_CNC_Z = 3;            
+    constexpr int MB_CNC_TEMP = 4;         
+    constexpr int MB_CNC_LOAD = 5;         
+    constexpr int MB_CNC_WEAR = 6;         
+
+    constexpr int MB_CONVEYOR_POS = 7;     
+    constexpr int MB_CONVEYOR_SPEED = 8;   
+    constexpr int MB_CONVEYOR_SENSOR = 9;  
+
+    constexpr int MB_FILE_PATH_START = 10; 
+    constexpr int MB_FILE_PATH_END = 50;
 }
 
-enum class MachineState
-{
-    IDLE,
-    WORKING,
-    ERROR
-};
-
-enum class MachineCommand
-{
-    RESET,
-    STOP
-};
+enum class MachineState { IDLE, WORKING, FAULT };
+enum class MachineCommand { RESET, STOP };
 
 struct MachineTelemetry
 {
@@ -59,8 +63,7 @@ public:
     unsigned int getErrors() const;
     double getTemp() const;
 
-    MachineTelemetry getFullTelemetry() const; 
-
+    MachineTelemetry getFullTelemetry() const;
     virtual void updatePhysics(double deltaTime) = 0;
 };
 
@@ -70,24 +73,20 @@ private:
     double currentX, currentY, currentZ;
     double targetX, targetY, targetZ;
     double startX, startY;
-
     double spindelSpeed;
     bool isCutting;
     double wearing;
     double rotateRadius;
     double feedRate;
-
-    int currentGCodeMode; 
-    double arcAngle;      
-    double targetAngle;   
-    double centerX, centerY; 
+    int currentGCodeMode;
+    double arcAngle;
+    double targetAngle;
+    double centerX, centerY;
 
 public:
     CNC_Machine(int id, const std::string& name);
-
     void executeCuttingProgramm(std::string filePath);
     void updatePhysics(double deltaTime) override;
-
     void setTargetCoordinates(double x, double y, double z, double feed, double speed, int gMode, double radius);
 
     double getCurrentX() const;
@@ -107,10 +106,8 @@ private:
     bool itemDetected;
 public:
     Conveyor_Machine(int id, const std::string& name);
-
     void executeMoveProgramm();
     void updatePhysics(double deltaTime) override;
-
     double getCurrentPosition() const;
     double getBeltSpeed() const;
     bool isItemAtStation() const;

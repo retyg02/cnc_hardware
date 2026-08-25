@@ -1,0 +1,128 @@
+﻿<Window x:Class="FactoryModbusDriver.MainWindow"
+        xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x = "http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d = "http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc = "http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FactoryModbusDriver"
+        mc:Ignorable="d"
+        Title="Промышленный Шлюз Автоматизации цеха ЧПУ" Height="450" Width="700"
+        Background="#111113" Foreground="#FFFFFF" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- СТИЛЬ ДЛЯ АВАРИЙНОЙ КНОПКИ СТОП (ЧИСТЫЙ КРАСНЫЙ ХОВЕР) -->
+        <Style x:Key="ModernEmergencyButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#1C1C1F"/>
+            <Setter Property="Foreground" Value="#FF4F4F"/>
+            <Setter Property="BorderBrush" Value="#FF4F4F"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3A1717"/>
+                    <Setter Property="BorderBrush" Value="#FF7373"/>
+                    <Setter Property="Foreground" Value="#FF7373"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#541B1B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- СТИЛЬ ДЛЯ МЯТНОЙ КНОПКИ СВЕРТЫВАНИЯ В ТРЕЙ -->
+        <Style x:Key="ModernTrayButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#4CE0B3"/>
+            <Setter Property="Foreground" Value="#111113"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#6DF0C8"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#3BB892"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- ЗАГОЛОВОК И ДИЗАЙН ИНДИКАТОРОВ -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="MODBUS ⇄ HTTP GATEWAY DRIVER" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Foreground="#4CE0B3"/>
+
+            <!-- СВЕТЯЩИЕСЯ LED ЛАМПОЧКИ СВЯЗИ -->
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- LED Modbus C++ -->
+                <Ellipse x:Name="LedModbus" Width="12" Height="12" Fill="#FF4F4F" Margin="10,0,5,0">
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="#FF4F4F" BlurRadius="10" ShadowDepth="0"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+                <TextBlock Text="C++ Сеть" FontSize="11" VerticalAlignment="Center" Margin="0,0,15,0" Foreground="#A0A0A0"/>
+
+                <!-- LED FastAPI Web -->
+                <Ellipse x:Name="LedWeb" Width="12" Height="12" Fill="#FF4F4F" Margin="10,0,5,0">
+                    <Ellipse.Effect>
+                        <DropShadowEffect Color="#FF4F4F" BlurRadius="10" ShadowDepth="0"/>
+                    </Ellipse.Effect>
+                </Ellipse>
+                <TextBlock Text="FastAPI Бэкенд" FontSize="11" VerticalAlignment="Center" Foreground="#A0A0A0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- ЦЕНТРАЛЬНОЕ ОКНО СИСТЕМНЫХ ЛОГОВ -->
+        <GroupBox Grid.Row="1" Header=" Логи Шлюзования Данных (Телеметрия) " BorderBrush="#222226" Foreground="#8A8A92" FontSize="12">
+            <TextBox x:Name="LogBox" Background="Transparent" Foreground="#39D353" BorderThickness="0" 
+                     FontFamily="Consolas" FontSize="13" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Margin="10" TextWrapping="Wrap"/>
+        </GroupBox>
+
+        <!-- ПАНЕЛЬ УПРАВЛЕНИЯ И КНОПКИ -->
+        <Grid Grid.Row="2" Margin="0,15,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" x:Name="StatusLabel" Text="Статус драйвера: Инициализация сокетов..." VerticalAlignment="Center" Foreground="#62626A" FontSize="11" FontStyle="Italic"/>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Style="{StaticResource ModernEmergencyButtonStyle}" Content="ЭКСТРЕННЫЙ СТОП" Width="140" Height="32" Margin="0,0,10,0" Click="StopButton_Click"/>
+                <Button Style="{StaticResource ModernTrayButtonStyle}" Content="СВЕРНУТЬ В ТРЕЙ" Width="130" Height="32" Click="TrayButton_Click"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>
