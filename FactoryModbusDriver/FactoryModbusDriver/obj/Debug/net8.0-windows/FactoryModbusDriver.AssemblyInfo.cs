@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FactoryModbusDriver")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a0cb6226ff91d8677851ed601023979ed228a59")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+132b570cb1cc588c33b5656232b26f657bdf622a")]
 [assembly: System.Reflection.AssemblyProductAttribute("FactoryModbusDriver")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FactoryModbusDriver")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

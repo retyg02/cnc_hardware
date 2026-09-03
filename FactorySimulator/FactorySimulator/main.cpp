@@ -56,22 +56,22 @@ void runCNCLifecycle(std::shared_ptr<CNC_Machine> cnc, std::shared_ptr<Conveyor_
     {
         tickCounter++;
 
-        // 📥 ШАГ 1: МОНИТОРИНГ КОНВЕЙЕРА И СЕТЕВОГО ТРИГГЕРА
+    
         if (!fileOpened && cnc->getState() == MachineState::IDLE)
         {
             if (modbus_registers[0] == 1 || modbus_registers[0] == 256)
             {
-                // ⏳ Даем C# шлюзу 50 мс полностью заполнить буфер
+                
                 std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
-                // 📂 ЧИТАЕМ ИМЯ ФАЙЛА С ПРАВИЛЬНЫМ ПОРЯДКОМ БАЙТ
+                
                 std::string fileName = "";
                 for (int i = 10; i <= 50; ++i)
                 {
                     uint16_t regValue = modbus_registers[i];
                     if (regValue == 0) break;
 
-                    // Меняем байты местами для правильной склейки букв
+                    
                     char lowChar = static_cast<char>(regValue & 0xFF);
                     char highChar = static_cast<char>((regValue >> 8) & 0xFF);
 
@@ -81,7 +81,7 @@ void runCNCLifecycle(std::shared_ptr<CNC_Machine> cnc, std::shared_ptr<Conveyor_
 
                 if (fileName.empty()) fileName = "test.nc";
 
-                // Проверяем датчик заготовки (Регистр 9)
+                
                 if (modbus_registers[9] == 0)
                 {
                     static bool conveyorLogSent = false;
@@ -90,7 +90,7 @@ void runCNCLifecycle(std::shared_ptr<CNC_Machine> cnc, std::shared_ptr<Conveyor_
                         conveyorLogSent = true;
                     }
                 }
-                else // Заготовка доехала на позицию
+                else 
                 {
                     std::cout << "\n[ДАТЧИК ПЛК] Заготовка зафиксирована в рабочей зоне!\n";
 
@@ -102,7 +102,7 @@ void runCNCLifecycle(std::shared_ptr<CNC_Machine> cnc, std::shared_ptr<Conveyor_
                     file.open(dynamicPath);
                     if (!file.is_open())
                     {
-                        // 🛠️ РЕЗЕРВНЫЙ ФАЙЛ: Если динамический не нашелся, мягко подхватываем test.nc
+                        
                         std::cout << "[СИСТЕМА ЧПУ WARNING] Файл '" << fileName << "' не найден. Запуск резервной программы test.nc...\n";
                         fileName = "test.nc";
                         dynamicPath = "C:/Users/User/Desktop/all_git/g-code/" + fileName;
@@ -126,42 +126,42 @@ void runCNCLifecycle(std::shared_ptr<CNC_Machine> cnc, std::shared_ptr<Conveyor_
             }
         }
 
-        // ⚙️ ШАГ 2: ПОШАГОВАЯ РЕЗКА ДЕТАЛИ И ТЕХНОЛОГИЧЕСКИЙ РЕПОРТ
+        
         if (cnc->getState() == MachineState::WORKING && fileOpened)
         {
             if (needNextLine)
             {
                 if (std::getline(file, currentLine))
                 {
-                    // 1. Убираем символ возврата каретки \r (если файл сохранен в Windows формате)
+                    
                     if (!currentLine.empty() && currentLine.back() == '\r') {
                         currentLine.pop_back();
                     }
 
-                    // 2. СРАЗУ ОТРЕЗАЕМ КОММЕНТАРИИ В C++
+                    
                     if (currentLine.empty()) continue;
                     size_t commentPos = currentLine.find(';');
                     if (commentPos != std::string::npos) {
                         currentLine = currentLine.substr(0, commentPos);
                     }
 
-                    // 3. Тримминг (удаляем случайные пробелы в начале и конце строки)
+                    
                     size_t first = currentLine.find_first_not_of(" \t");
-                    if (first == std::string::npos) continue; // Строка состояла только из пробелов/комментария
+                    if (first == std::string::npos) continue; 
                     size_t last = currentLine.find_last_not_of(" \t");
                     currentLine = currentLine.substr(first, (last - first + 1));
 
-                    // 4. И ВОТ ТЕПЕРЬ ОТПРАВЛЯЕМ ЧИСТЫЙ ТЕХНОЛОГИЧЕСКИЙ КАДР В RUST!
+                    
                     if (!validate_gcode_line(currentLine.c_str()))
                     {
-                        std::cout << "\n[🚨 АВАРИЙНЫЙ СТОП] Rust Validator заблокировал опасный кадр: " << currentLine << "\n";
+                        std::cout << "\n[АВАРИЙНЫЙ СТОП] Rust Validator заблокировал опасный кадр: " << currentLine << "\n";
                         cnc->setState(MachineState::FAULT);
                         modbus_registers[FactorySettings::MB_CNC_STATUS] = static_cast<uint16_t>(MachineState::FAULT);
                         file.close(); fileOpened = false;
                         continue;
                     }
 
-                    // 5. ДАЛЬШЕ ИДЕТ ТВОЙ РОДНОЙ ПАРСЕР ТОКЕНОВ (Он получит уже чистую строку)
+                    
                     std::stringstream ss(currentLine); std::string token;
                     int gMode = 1; double radius = 0.0; bool motionFrame = false;
 
@@ -219,14 +219,14 @@ void runCNCLifecycle(std::shared_ptr<CNC_Machine> cnc, std::shared_ptr<Conveyor_
                 }
             }
 
-            // 🎯 ЧЕСТНЫЙ ИНДУСТРИАЛЬНЫЙ ТРИГГЕР ПО ДИСТАНЦИИ
+            
             double distanceToTarget = std::sqrt(
                 std::pow(cnc->getCurrentX() - lastX, 2) +
                 std::pow(cnc->getCurrentY() - lastY, 2) +
                 std::pow(cnc->getCurrentZ() - lastZ, 2)
             );
 
-            // Если фреза физически доехала до цели кадра — просим следующую строку!
+            
             if (!needNextLine && distanceToTarget < 0.1)
             {
                 std::cout << "  [СИСТЕМА ЧПУ] Кадр выполнен. Переход к следующему...\n";
@@ -253,7 +253,7 @@ void runModbusServer()
     SOCKET serverSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (serverSocket == INVALID_SOCKET) { WSACleanup(); return; }
 
-    // Чиним залипание порта 502 при перезапусках симулятора
+    
     int optval = 1;
     setsockopt(serverSocket, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<const char*>(&optval), sizeof(optval));
 
@@ -275,27 +275,27 @@ void runModbusServer()
         {
             //std::cout << "[СЕТЬ] Промышленный шлюз C# подключился. Сессия обмена открыта.\n";
 
-            // 🔄 ВНУТРЕННИЙ ЦИКЛ: Выкачиваем пакеты из одного сокета до победного!
+            
             while (isFactoryRunning)
             {
                 int bytesReceived = recv(acceptSocket, reinterpret_cast<char*>(netBuffer), sizeof(netBuffer), 0);
 
-                // Если C# отключился или таймаут — закрываем этот сокет и идем к accept()
+                
                 if (bytesReceived <= 0)
                 {
                     //std::cout << "[СЕТЬ] Соединение со шлюзом закрыто. Ожидание нового подключения...\n";
                     closesocket(acceptSocket);
-                    break; // Выход во внешний цикл к функции accept()
+                    break; 
                 }
                 if (bytesReceived >= 12)
                 {
-                    // 1. АСЕМБЛЕРНАЯ ВАЛИДАЦИЯ ПАКЕТА (Твой фирменный блок)
+                    
                     uint32_t dataLengthWithoutCRC = static_cast<uint32_t>(bytesReceived - 2);
                     uint16_t computedCRC = calculateCRC16_Asm(netBuffer, dataLengthWithoutCRC);
                     uint16_t receivedCRC = (static_cast<uint16_t>(netBuffer[bytesReceived - 2]) << 8) |
                         static_cast<uint16_t>(netBuffer[bytesReceived - 1]);
 
-                    // Раскомментируй этот блок защиты, когда синхронизируешь CRC на C# шлюзе
+                    
                     // if (computedCRC != receivedCRC) {
                     //     std::cout << "[ОШИБКА СВЯЗИ] Критический сбой CRC16! Пакет уничтожен.\n";
                     //     continue;
@@ -304,7 +304,7 @@ void runModbusServer()
                     unsigned char fCode = netBuffer[7];
                     int startReg = (static_cast<int>(netBuffer[8]) << 8) | static_cast<int>(netBuffer[9]);
 
-                    // --- ФУНКЦИЯ 0x03: ЧТЕНИЕ РЕГИСТРОВ (Отдача телеметрии в C#) ---
+                    
                     if (fCode == 0x03 && startReg >= 0 && startReg < 60)
                     {
                         int regCount = (static_cast<int>(netBuffer[10]) << 8) | static_cast<int>(netBuffer[11]);
@@ -323,7 +323,7 @@ void runModbusServer()
                         response[5] = static_cast<unsigned char>(pduLength & 0xFF);
                         send(acceptSocket, reinterpret_cast<char*>(response), totalLength, 0);
                     }
-                    // --- ФУНКЦИЯ 0x06: ЗАПИСЬ ОДНОГО РЕГИСТРА (Будильник ЧПУ станка) ---
+                    
                     else if (fCode == 0x06 && startReg >= 0 && startReg < 60)
                     {
                         uint16_t valueToWrite = (static_cast<int>(netBuffer[10]) << 8) | static_cast<int>(netBuffer[11]);
@@ -337,7 +337,7 @@ void runModbusServer()
 
                         send(acceptSocket, reinterpret_cast<char*>(netBuffer), bytesReceived, 0);
                     }
-                    // --- ФУНКЦИЯ 0x10: ГРУППОВАЯ ЗАПИСЬ РЕГИСТРОВ (ASCII Имя файла) ---
+                    
                     else if (fCode == 0x10 && startReg >= 0 && startReg < 60)
                     {
                         int regCount = (static_cast<int>(netBuffer[10]) << 8) | static_cast<int>(netBuffer[11]);
@@ -357,9 +357,9 @@ void runModbusServer()
                         send(acceptSocket, reinterpret_cast<char*>(response), 12, 0);
                     }
                 }
-            } // Конец внутреннего цикла while (чтение пакетов из живого сокета)
+            } 
         }
-    } // Конец внешнего цикла сокет-сервера
+    } 
     closesocket(serverSocket);
     WSACleanup();
 }
@@ -375,10 +375,10 @@ int main()
     auto cncStation = std::make_shared<CNC_Machine>(1, "Фрезер ЧПУ HAAS VF2");
     auto conveyorBelt = std::make_shared<Conveyor_Machine>(2, "Линия транспортера");
 
-    global_cnc = cncStation; // Теперь сетевой поток сокетов видит этот живой объект!
+    global_cnc = cncStation; 
 
 
-    conveyorBelt->setSensor(true); // Взводим датчик заготовки при старте сервера
+    conveyorBelt->setSensor(true);
 
 
     std::thread conveyorThread(runConveyorLifecycle, conveyorBelt);

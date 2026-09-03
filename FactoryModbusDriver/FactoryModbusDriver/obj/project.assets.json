@@ -611,11 +611,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\FactoryModbusDriver\\FactoryModbusDriver\\FactoryModbusDriver.csproj",
+      "projectUniqueName": "C:\\Users\\User\\Desktop\\all_git\\hardware_source\\FactoryModbusDriver\\FactoryModbusDriver\\FactoryModbusDriver.csproj",
       "projectName": "FactoryModbusDriver",
-      "projectPath": "C:\\Users\\User\\source\\repos\\FactoryModbusDriver\\FactoryModbusDriver\\FactoryModbusDriver.csproj",
+      "projectPath": "C:\\Users\\User\\Desktop\\all_git\\hardware_source\\FactoryModbusDriver\\FactoryModbusDriver\\FactoryModbusDriver.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\source\\repos\\FactoryModbusDriver\\FactoryModbusDriver\\obj\\",
+      "outputPath": "C:\\Users\\User\\Desktop\\all_git\\hardware_source\\FactoryModbusDriver\\FactoryModbusDriver\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",

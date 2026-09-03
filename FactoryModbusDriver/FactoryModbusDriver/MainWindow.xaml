@@ -9,7 +9,6 @@
         Background="#111113" Foreground="#FFFFFF" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <!-- СТИЛЬ ДЛЯ АВАРИЙНОЙ КНОПКИ СТОП (ЧИСТЫЙ КРАСНЫЙ ХОВЕР) -->
         <Style x:Key="ModernEmergencyButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#1C1C1F"/>
             <Setter Property="Foreground" Value="#FF4F4F"/>
@@ -41,7 +40,6 @@
             </Style.Triggers>
         </Style>
 
-        <!-- СТИЛЬ ДЛЯ МЯТНОЙ КНОПКИ СВЕРТЫВАНИЯ В ТРЕЙ -->
         <Style x:Key="ModernTrayButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#4CE0B3"/>
             <Setter Property="Foreground" Value="#111113"/>
@@ -75,7 +73,6 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <!-- ЗАГОЛОВОК И ДИЗАЙН ИНДИКАТОРОВ -->
         <Grid Grid.Row="0" Margin="0,0,0,20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -84,9 +81,9 @@
 
             <TextBlock Grid.Column="0" Text="MODBUS ⇄ HTTP GATEWAY DRIVER" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" Foreground="#4CE0B3"/>
 
-            <!-- СВЕТЯЩИЕСЯ LED ЛАМПОЧКИ СВЯЗИ -->
+            
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <!-- LED Modbus C++ -->
+                
                 <Ellipse x:Name="LedModbus" Width="12" Height="12" Fill="#FF4F4F" Margin="10,0,5,0">
                     <Ellipse.Effect>
                         <DropShadowEffect Color="#FF4F4F" BlurRadius="10" ShadowDepth="0"/>
@@ -94,7 +91,7 @@
                 </Ellipse>
                 <TextBlock Text="C++ Сеть" FontSize="11" VerticalAlignment="Center" Margin="0,0,15,0" Foreground="#A0A0A0"/>
 
-                <!-- LED FastAPI Web -->
+                
                 <Ellipse x:Name="LedWeb" Width="12" Height="12" Fill="#FF4F4F" Margin="10,0,5,0">
                     <Ellipse.Effect>
                         <DropShadowEffect Color="#FF4F4F" BlurRadius="10" ShadowDepth="0"/>
@@ -103,14 +100,12 @@
                 <TextBlock Text="FastAPI Бэкенд" FontSize="11" VerticalAlignment="Center" Foreground="#A0A0A0"/>
             </StackPanel>
         </Grid>
-
-        <!-- ЦЕНТРАЛЬНОЕ ОКНО СИСТЕМНЫХ ЛОГОВ -->
+        
         <GroupBox Grid.Row="1" Header=" Логи Шлюзования Данных (Телеметрия) " BorderBrush="#222226" Foreground="#8A8A92" FontSize="12">
             <TextBox x:Name="LogBox" Background="Transparent" Foreground="#39D353" BorderThickness="0" 
                      FontFamily="Consolas" FontSize="13" IsReadOnly="True" VerticalScrollBarVisibility="Auto" Margin="10" TextWrapping="Wrap"/>
         </GroupBox>
 
-        <!-- ПАНЕЛЬ УПРАВЛЕНИЯ И КНОПКИ -->
         <Grid Grid.Row="2" Margin="0,15,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>

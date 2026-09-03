@@ -59,15 +59,14 @@ void CNC_Machine::setTargetCoordinates(double x, double y, double z, double feed
 
         if (dist > 0.0 && dist <= 2.0 * radius)
         {
-            // Находим среднюю точку между стартом и финишем
+            
             double midX = (startX + targetX) / 2.0;
             double midY = (startY + targetY) / 2.0;
 
-            // Находим расстояние от средней точки до центра окружности
+            
             double h = std::sqrt(radius * radius - (dist * dist) / 4.0);
 
-            // ЖЕСТКИЙ ГЕОМЕТРИЧЕСКИЙ ФИКС ЗНАКОВ ДЛЯ ОТРИЦАТЕЛЬНЫХ ЧЕТВЕРТЕЙ СЕТКИ:
-            // Направление смещения строго зависит от того, идем мы по часовой (G02) или против (G03)
+            
             if (gMode == 2)
             {
                 centerX = midX + h * (dy / dist);
@@ -79,11 +78,11 @@ void CNC_Machine::setTargetCoordinates(double x, double y, double z, double feed
                 centerY = midY + h * (dx / dist);
             }
 
-            // Вычисляем начальный и конечный углы в радианах
+            
             arcAngle = std::atan2(startY - centerY, startX - centerX);
             targetAngle = std::atan2(targetY - centerY, targetX - centerX);
 
-            // Корректируем разность углов, чтобы дуга не крутилась на 360 градусов в обратную сторону
+            
             if (gMode == 2 && targetAngle > arcAngle) targetAngle -= 2.0 * M_PI;
             if (gMode == 3 && targetAngle < arcAngle) targetAngle += 2.0 * M_PI;
         }

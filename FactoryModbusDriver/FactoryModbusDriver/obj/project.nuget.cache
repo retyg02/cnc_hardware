@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "rSTGhchfGyY=",
+  "dgSpecHash": "x3vWDd63WJ0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\User\\source\\repos\\FactoryModbusDriver\\FactoryModbusDriver\\FactoryModbusDriver.csproj",
+  "projectFilePath": "C:\\Users\\User\\Desktop\\all_git\\hardware_source\\FactoryModbusDriver\\FactoryModbusDriver\\FactoryModbusDriver.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\User\\.nuget\\packages\\fluentmodbus\\5.3.2\\fluentmodbus.5.3.2.nupkg.sha512",
     "C:\\Users\\User\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\5.0.0\\microsoft.extensions.logging.abstractions.5.0.0.nupkg.sha512",
